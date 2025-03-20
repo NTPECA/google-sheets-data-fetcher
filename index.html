@@ -2,17 +2,30 @@
 <html>
 <head>
     <title>Google Sheets Data Fetcher</title>
-    <script src="https://apis.google.com/js/api.js" async defer></script>
+    <script src="https://apis.google.com/js/api.js?onload=init" async defer></script>
     <script>
         function init() {
-            gapi.client.init({
-                'apiKey': 'AIzaSyDCXbc3M3ZAmIi_FJTSHuC2MVuzSqxJZPY',
-                'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-            }).then(function() {
-                document.getElementById('searchButton').onclick = searchSheet;
-            }).catch(function(error) {
-                console.error('Error initializing Google API client:', error);
-                document.getElementById('result').innerText = 'Error initializing Google API client.';
+            gapi.load('client', {
+                callback: function() {
+                    gapi.client.init({
+                        'apiKey': 'AIzaSyDCXbc3M3ZAmIi_FJTSHuC2MVuzSqxJZPY',
+                        'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+                    }).then(function() {
+                        document.getElementById('searchButton').onclick = searchSheet;
+                    }).catch(function(error) {
+                        console.error('Error initializing Google API client:', error);
+                        document.getElementById('result').innerText = 'Error initializing Google API client.';
+                    });
+                },
+                onerror: function() {
+                    console.error('Error loading Google API client library.');
+                    document.getElementById('result').innerText = 'Error loading Google API client library.';
+                },
+                timeout: 5000, // 5 seconds.
+                ontimeout: function() {
+                    console.error('Google API client library load timeout.');
+                    document.getElementById('result').innerText = 'Google API client library load timeout.';
+                }
             });
         }
 
@@ -21,13 +34,13 @@
 
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: '1ai2njbt8pkT5zk-y82Ek14XqKkLDU_Sgx7eZA1xXQ7w',
-                range: 'Sheet1!A:L', // Adjust the range as needed
+                range: 'Sheet1!A:D', // Adjust the range as needed
             }).then(function(response) {
                 const rows = response.result.values;
                 let result = 'No match found';
                 rows.forEach(row => {
                     if (row[0] == id) {
-                        result = `ID: ${row[0]}, Data: ${row[1]}, ${row[2]}, ${row[3]}, ${row[4]}, ${row[5]}, ${row[6]}, ${row[7]}, ${row[8]}, ${row[9]}, ${row[10]}`;
+                        result = `ID: ${row[0]}, Data: ${row[1]}, ${row[2]}, ${row[3]}`;
                     }
                 });
                 document.getElementById('result').innerText = result;
@@ -36,8 +49,6 @@
                 document.getElementById('result').innerText = 'Error fetching data from Google Sheets.';
             });
         }
-
-        gapi.load('client', init);
     </script>
 </head>
 <body>
