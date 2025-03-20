@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ntpeca</title>
+    <title>NTPECA</title>
     <style>
         table {
             border-collapse: collapse;
@@ -29,7 +29,7 @@
 
             const apiKey = 'AIzaSyDCXbc3M3ZAmIi_FJTSHuC2MVuzSqxJZPY'; // Replace with your actual API key
             const spreadsheetId = '1ai2njbt8pkT5zk-y82Ek14XqKkLDU_Sgx7eZA1xXQ7w'; // Replace with your Sheet ID
-            const range = "A:L"; // Adjust this range as needed
+            const range = "Sheet1!A:L"; // Reference the hidden sheet 'Sheet1'
 
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
             
@@ -40,38 +40,54 @@
                 if (data.values) {
                     const rows = data.values;
                     const result = rows.find(row => row[0] === userId); // Match ID in column A
-
+                    
                     if (result) {
                         // Create table dynamically
                         const table = `
                             <table>
-                                <thead>
-                                    <tr>
-                                        <th>ID Number</th>
-                                        <th>Name</th>
-                                        <th>Long Term Balance</th>
-                                        <th>Start</th>
-                                        <th>End</th>
-                                        <th>Guarantor</th>
-                                        <th>Short Term Balance</th>
-                                        <th>Start</th>
-                                        <th>End</th>
-                                        <th>Guarantor</th>
-                                        <th>Cut Off Period</th>
-                                    </tr>
-                                </thead>
                                 <tbody>
                                     <tr>
+                                        <th>ID Number</th>
                                         <td>${result[0]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Name</th>
                                         <td>${result[1]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Long Term Balance</th>
                                         <td>${result[2]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Start</th>
                                         <td>${result[3]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>End</th>
                                         <td>${result[4]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Guarantor</th>
                                         <td>${result[5]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Short Term Balance</th>
                                         <td>${result[6]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Start</th>
                                         <td>${result[7]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>End</th>
                                         <td>${result[8]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Guarantor</th>
                                         <td>${result[9]}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Cut Off Period</th>
                                         <td>${result[11]}</td>
                                     </tr>
                                 </tbody>
