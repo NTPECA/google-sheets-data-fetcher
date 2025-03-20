@@ -44,13 +44,13 @@
 
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: '1ai2njbt8pkT5zk-y82Ek14XqKkLDU_Sgx7eZA1xXQ7w',
-                range: 'Sheet1!A:D', // Adjust the range as needed
+                range: 'Sheet1!A:L', // Adjust the range as needed
             }).then(function(response) {
                 const rows = response.result.values;
                 let result = 'No match found';
                 rows.forEach(row => {
                     if (row[0] == id) {
-                        result = `ID: ${row[0]}, Data: ${row[1]}, ${row[2]}, ${row[3]}`;
+                        result = `ID: ${row[0]}, Name: ${row[1]}, Long Term Bal: ${row[2]}, Start: ${row[3]}, End: ${row[4]}, Guarantor: ${row[5]}, Short Term Bal: ${row[6]}, Start: ${row[7]}, End: ${row[8]}, Guarantor: ${row[9]}, Cutoff: ${row[11]}`;
                     }
                 });
                 document.getElementById('result').innerText = result;
