@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sheets Data Fetcher</title>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        function init() {
+            gapi.client.init({
+                'apiKey': 'AIzaSyDCXbc3M3ZAmIi_FJTSHuC2MVuzSqxJZPY',
+                'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+            }).then(function() {
+                document.getElementById('searchButton').onclick = searchSheet;
+            });
+        }
+
+        function searchSheet() {
+            const id = document.getElementById('idInput').value;
+
+            gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: 'https://docs.google.com/spreadsheets/d/1ai2njbt8pkT5zk-y82Ek14XqKkLDU_Sgx7eZA1xXQ7w/edit?gid=0#gid=0',
+                range: 'Sheet1!A:D', // Adjust the range as needed
+            }).then(function(response) {
+                const rows = response.result.values;
+                let result = 'No match found';
+                rows.forEach(row => {
+                    if (row[0] == id) {
+                        result = `ID: ${row[0]}, Data: ${row[1]}, ${row[2]}, ${row[3]}`;
+                    }
+                });
+                document.getElementById('result').innerText = result;
+            });
+        }
+
+        gapi.load('client', init);
+    </script>
+</head>
+<body>
+    <h1>Google Sheets Data Fetcher</h1>
+    <input type="text" id="idInput" placeholder="Enter ID">
+    <button id="searchButton">Search</button>
+    <p id="result"></p>
+</body>
+</html>
