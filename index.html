@@ -18,13 +18,13 @@
 
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: 'https://docs.google.com/spreadsheets/d/1ai2njbt8pkT5zk-y82Ek14XqKkLDU_Sgx7eZA1xXQ7w/edit?gid=0#gid=0',
-                range: 'Sheet1!A:D', // Adjust the range as needed
+                range: 'Sheet1!A:L', // Adjust the range as needed
             }).then(function(response) {
                 const rows = response.result.values;
                 let result = 'No match found';
                 rows.forEach(row => {
                     if (row[0] == id) {
-                        result = `ID: ${row[0]}, Data: ${row[1]}, ${row[2]}, ${row[3]}`;
+                        result = `ID: ${row[0]}, Data: ${row[1]}, ${row[2]}, ${row[3]}, ${row[4]}, ${row[5]}, ${row[6]}, ${row[7]}, ${row[8]}, ${row[9]}, ${row[10]}`;
                     }
                 });
                 document.getElementById('result').innerText = result;
