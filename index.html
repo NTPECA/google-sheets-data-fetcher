@@ -1,73 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>NTPECA LOAN BALANCE INQUIRY</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Data Fetcher</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
     <script>
-        function loadGapi() {
-            const script = document.createElement('script');
-            script.src = 'https://apis.google.com/js/api.js';
-            script.onload = init;
-            script.onerror = function() {
-                console.error('Error loading Google API client library.');
-                document.getElementById('result').innerText = 'Error loading Google API client library.';
-            };
-            document.head.appendChild(script);
-        }
+        async function fetchData() {
+            const userId = document.getElementById("userId").value;
+            if (!userId) {
+                alert("Please enter a User ID.");
+                return;
+            }
 
-        function init() {
-            gapi.load('client', {
-                callback: function() {
-                    gapi.client.init({
-                        'apiKey': 'AIzaSyDCXbc3M3ZAmIi_FJTSHuC2MVuzSqxJZPY',
-                        'discoveryDocs': ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
-                    }).then(function() {
-                        document.getElementById('searchButton').onclick = searchSheet;
-                    }).catch(function(error) {
-                        console.error('Error initializing Google API client:', error);
-                        document.getElementById('result').innerText = 'Error initializing Google API client.';
-                    });
-                },
-                onerror: function() {
-                    console.error('Error loading Google API client library.');
-                    document.getElementById('result').innerText = 'Error loading Google API client library.';
-                },
-                timeout: 5000, // 5 seconds.
-                ontimeout: function() {
-                    console.error('Google API client library load timeout.');
-                    document.getElementById('result').innerText = 'Google API client library load timeout.';
-                }
-            });
-        }
+            const apiKey = " AIzaSyDCXbc3M3ZAmIi_FJTSHuC2MVuzSqxJZPY"; // Replace with your actual API key
+            const spreadsheetId = "https://docs.google.com/spreadsheets/d/1ai2njbt8pkT5zk-y82Ek14XqKkLDU_Sgx7eZA1xXQ7w/edit"; // Replace with your Sheet ID
+            const range = "A:L"; // Adjust this range as needed
 
-        function searchSheet() {
-            const id = document.getElementById('idInput').value;
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
 
-            gapi.client.sheets.spreadsheets.values.get({
-                spreadsheetId: '1ai2njbt8pkT5zk-y82Ek14XqKkLDU_Sgx7eZA1xXQ7w',
-                range: 'Sheet1!A:L', // Adjust the range as needed
-            }).then(function(response) {
-                const rows = response.result.values;
-                let result = '<table border="1"><tr><th>ID</th><th>Name</th><th>Long_Term_Bal</th><th>Start</th><th>End</th><th>Guarantor</th><th>Short_Term_Bal</th><th>Start</th><th>End</th><th>Guarantor</th><th>Cutoff</th></tr>';
-                rows.forEach(row => {
-                    if (row[0] == id) {
-                        result += `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td><td>${row[6]}</td><td>${row[7]}</td><td>${row[8]}</td><td>${row[9]}</td><td>${row[11]}</td></tr>`;
+                if (data.values) {
+                    const rows = data.values;
+                    const result = rows.find(row => row[0] === userId); // Match ID in column A
+
+                    if (result) {
+                        // Create table dynamically
+                        const table = `
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID Number</th>
+                                        <th>Name</th>
+                                        <th>Long Term Balance</th>
+                                        <th>Start</th>
+                                        <th>End</th>
+                                        <th>Guarantor</th>
+                                        <th>Short Term Balance</th>
+                                        <th>Start</th>
+                                        <th>End</th>
+                                        <th>Guarantor</th>
+                                        <th>Cut Off Period</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${result[0]}</td>
+                                        <td>${result[1]}</td>
+                                        <td>${result[2]}</td>
+                                        <td>${result[3]}</td>
+                                        <td>${result[4]}</td>
+                                        <td>${result[5]}</td>
+                                        <td>${result[6]}</td>
+                                        <td>${result[7]}</td>
+                                        <td>${result[8]}</td>
+                                        <td>${result[9]}</td>
+                                        <td>${result[11]}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        `;
+
+                        document.getElementById("output").innerHTML = table;
+                    } else {
+                        document.getElementById("output").innerText = "No data found for the provided User ID.";
                     }
-                });
-                result += '</table>';
-                document.getElementById('result').innerHTML = result;
-            }).catch(function(error) {
-                console.error('Error fetching data from Google Sheets:', error);
-                document.getElementById('result').innerText = 'Error fetching data from Google Sheets.';
-            });
+                } else {
+                    document.getElementById("output").innerText = "Error fetching data or no data available.";
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                document.getElementById("output").innerText = "An error occurred while fetching data.";
+            }
         }
-
-        window.onload = loadGapi;
     </script>
 </head>
 <body>
-    <h1>NTPECA LOAN BALANCE INQUIRY</h1>
-    <input type="text" id="idInput" placeholder="Enter ID">
-    <button id="searchButton">Search</button>
-    <div id="result"></div>
+    <h1>NTPECA LOAN BALANCE INQUIRY </h1>
+    <label for="userId">Enter User ID:</label>
+    <input type="text" id="userId" placeholder="Enter ID">
+    <button onclick="fetchData()">Fetch Data</button>
+    <div id="output"></div>
 </body>
 </html>
