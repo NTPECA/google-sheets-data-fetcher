@@ -2,8 +2,18 @@
 <html>
 <head>
     <title>Google Sheets Data Fetcher</title>
-    <script src="https://apis.google.com/js/api.js?onload=init" async defer></script>
     <script>
+        function loadGapi() {
+            const script = document.createElement('script');
+            script.src = 'https://apis.google.com/js/api.js';
+            script.onload = init;
+            script.onerror = function() {
+                console.error('Error loading Google API client library.');
+                document.getElementById('result').innerText = 'Error loading Google API client library.';
+            };
+            document.head.appendChild(script);
+        }
+
         function init() {
             gapi.load('client', {
                 callback: function() {
@@ -49,6 +59,8 @@
                 document.getElementById('result').innerText = 'Error fetching data from Google Sheets.';
             });
         }
+
+        window.onload = loadGapi;
     </script>
 </head>
 <body>
